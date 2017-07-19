@@ -6,3 +6,5 @@ Disallow: /fancybox
 Disallow: /font-awesome
 Disallow: /img
 Disallow: /js
+Sitemap: https://cmjzzx.github.io/sitemap.xml
+Sitemap: https://cmjzzx.github.io/baidusitemap.xml

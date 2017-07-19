@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+    
+    <entry>
+      <title><![CDATA[IcePatch2 命令行使用流程]]></title>
+      <url>/2017/07/19/icepatch2/</url>
+      <content type="html"><![CDATA[<ol>
+<li>编写一份配置文件，如：config.server，主要定义 <code>IcePatch2.InstanceName</code>、<code>IcePatch2.Endpoints</code>、<code>IcePatch2.Directory</code> 这 3 个属性。</li>
+<li>然后创建待同步的 server 端数据目录，如：serverData，里面存放待同步的目录及文件。</li>
+<li>运行 <code>icepatch2calc serverData</code>，压缩非空文件，计算校验和生成 IcePatch2.sum 文件。</li>
+<li>运行 <code>icepatch2server –Ice.Config=config.server</code>，开启 icepatch2server 服务，等待 client 的 patch 请求。</li>
+<li>创建 client 端数据目录，如：clientData，来同步对应的 server 端数据目录中的数据（也就是目录及文件）。</li>
+<li>在 client 端数据目录下运行 <code>icepatch2client –IcePatch2Client.Proxy=”${IcePatch2.InstanceName}/server:${IcePatch2.Endpoints}”</code>，开启 icepatch2client 服务，开始同步 server 端的数据。当然，也可以跟 server 端一样，将 <code>IcePatch2Client.Proxy</code> 这些属性放在一个独立的属性文件里，如：config.client，然后使用 <code>–Ice.Config=config.client</code> 来引入。</li>
+</ol>
+<p>client 端第一次同步数据可能会时间长点。</p>
+<p>server 端数据如果发生变动，如新增/删除了文件、文件内容有变更，需要先停止 icepatch2server 服务。然后运行 <code>icepatch2calc serverData</code> 重新压缩文件、计算校验和，再开启<br>icepatch2server 服务。最后开启 icepatch2client 服务，以同步最新的改动。</p>]]></content>
+      
+        <categories>
+            
+            <category> Ice </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Ice </tag>
+            
+            <tag> IcePatch2 </tag>
+            
+            <tag> 应用部署 </tag>
+            
+            <tag> 应用升级 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+  
+  
+</search>

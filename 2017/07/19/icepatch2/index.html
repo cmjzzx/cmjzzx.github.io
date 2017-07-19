@@ -13,16 +13,18 @@
 
 
 
-<meta name="description" content="随想">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Random Thoughts">
-<meta property="og:url" content="http://yoursite.com/archives/index.html">
+<meta name="description" content="编写一份配置文件，如：config.server，主要定义 IcePatch2.InstanceName、IcePatch2.Endpoints、IcePatch2.Directory 这 3 个属性。 然后创建待同步的 server 端数据目录，如：serverData，里面存放待同步的目录及文件。 运行 icepatch2calc serverData，压缩非空文件，计算校验和生成 IceP">
+<meta name="keywords" content="Ice,IcePatch2,应用部署,应用升级">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IcePatch2 命令行使用流程">
+<meta property="og:url" content="http://yoursite.com/2017/07/19/icepatch2/index.html">
 <meta property="og:site_name" content="Random Thoughts">
-<meta property="og:description" content="随想">
+<meta property="og:description" content="编写一份配置文件，如：config.server，主要定义 IcePatch2.InstanceName、IcePatch2.Endpoints、IcePatch2.Directory 这 3 个属性。 然后创建待同步的 server 端数据目录，如：serverData，里面存放待同步的目录及文件。 运行 icepatch2calc serverData，压缩非空文件，计算校验和生成 IceP">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-07-19T02:24:36.788Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Random Thoughts">
-<meta name="twitter:description" content="随想">
+<meta name="twitter:title" content="IcePatch2 命令行使用流程">
+<meta name="twitter:description" content="编写一份配置文件，如：config.server，主要定义 IcePatch2.InstanceName、IcePatch2.Endpoints、IcePatch2.Directory 这 3 个属性。 然后创建待同步的 server 端数据目录，如：serverData，里面存放待同步的目录及文件。 运行 icepatch2calc serverData，压缩非空文件，计算校验和生成 IceP">
 
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
@@ -54,7 +56,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Archives | Random Thoughts</title>
+<title>IcePatch2 命令行使用流程 | Random Thoughts</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -64,8 +66,8 @@
         fancybox: true,
         animate: true,
         isHome: false,
-        isPost: false,
-        isArchive: true,
+        isPost: true,
+        isArchive: false,
         isTag: false,
         isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
@@ -268,38 +270,149 @@
     </div>
     <link class="menu-list" tags="Tags" friends="Friends" about="About Me">
 </nav>
-      <div class="body-wrap"><section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2017/07/19/icepatch2/" class="archive-article-date">
-      <time datetime="2017-07-19T02:08:38.000Z" itemprop="datePublished">07-19</time>
+      <div class="body-wrap"><article id="post-icepatch2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/07/19/icepatch2/" class="article-date">
+      <time datetime="2017-07-19T02:08:38.000Z" itemprop="datePublished">2017-07-19</time>
 </a>
-        </div>
-         <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/07/19/icepatch2/">IcePatch2 命令行使用流程</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        <h1 class="article-title" itemprop="name">
+      IcePatch2 命令行使用流程
     </h1>
-        <div class="article-info info-on-archive">
-          <div class="article-category tagcloud">
+      </header>
+      
+      <div class="article-info article-info-post">
+        <div class="article-category tagcloud">
     <a class="article-category-link" href="/categories/Ice/">Ice</a>
     </div>
-          <div class="article-tag tagcloud">
+        <div class="article-tag tagcloud">
         <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ice/">Ice</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IcePatch2/">IcePatch2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/应用升级/">应用升级</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/应用部署/">应用部署</a></li></ul>
     </div>
-        </div>
         <div class="clearfix"></div>
-    </header>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <ol>
+<li>编写一份配置文件，如：config.server，主要定义 <code>IcePatch2.InstanceName</code>、<code>IcePatch2.Endpoints</code>、<code>IcePatch2.Directory</code> 这 3 个属性。</li>
+<li>然后创建待同步的 server 端数据目录，如：serverData，里面存放待同步的目录及文件。</li>
+<li>运行 <code>icepatch2calc serverData</code>，压缩非空文件，计算校验和生成 IcePatch2.sum 文件。</li>
+<li>运行 <code>icepatch2server –Ice.Config=config.server</code>，开启 icepatch2server 服务，等待 client 的 patch 请求。</li>
+<li>创建 client 端数据目录，如：clientData，来同步对应的 server 端数据目录中的数据（也就是目录及文件）。</li>
+<li>在 client 端数据目录下运行 <code>icepatch2client –IcePatch2Client.Proxy=”${IcePatch2.InstanceName}/server:${IcePatch2.Endpoints}”</code>，开启 icepatch2client 服务，开始同步 server 端的数据。当然，也可以跟 server 端一样，将 <code>IcePatch2Client.Proxy</code> 这些属性放在一个独立的属性文件里，如：config.client，然后使用 <code>–Ice.Config=config.client</code> 来引入。</li>
+</ol>
+<p>client 端第一次同步数据可能会时间长点。</p>
+<p>server 端数据如果发生变动，如新增/删除了文件、文件内容有变更，需要先停止 icepatch2server 服务。然后运行 <code>icepatch2calc serverData</code> 重新压缩文件、计算校验和，再开启<br>icepatch2server 服务。最后开启 icepatch2client 服务，以同步最新的改动。</p>
+      
+    </div>
+    
   </div>
+  
+    <div class="copyright">
+        <p><span>Title:</span><a href="/2017/07/19/icepatch2/">IcePatch2 命令行使用流程</a></p>
+        <p><span>Author:</span><a href="/" title="Back to Homepage">Zhu Wu</a></p>
+        <p><span>Created:</span>2017-07-19, 10:08:38</p>
+        <p><span>Updated:</span>2017-07-19, 10:24:36</p>
+        <p>
+            <span>Full URL:</span><a class="post-url" href="/2017/07/19/icepatch2/" title="IcePatch2 命令行使用流程">http://yoursite.com/2017/07/19/icepatch2/</a>
+            <span class="copy-path" data-clipboard-text="From http://yoursite.com/2017/07/19/icepatch2/　　By Zhu Wu" title="Copy Article&#39;s Link &amp; Author"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>License:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"CC BY-NC-SA 4.0"</a> Keep Link &amp; Author if Distribute.
+        </p>
+    </div>
+  
 </article>
-  
-  
-    </div></section></div>
+<div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+            
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="Hide" title="Show or Hide Table of Contents">
+
+    <script>
+        yiliaConfig.toc = ["Hide", "Show", !!"false"];
+    </script>
+
+
+    <div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"IcePatch2 命令行使用流程　| Random Thoughts　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2118965';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    <script> loadComment(); </script>
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+<div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="Back to Homepage"><i class="fa fa-home"></i></a>
+        
+
+        <a title="Mini Archives"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/" title="Back to Homepage"><i class="fa fa-home"></i></a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/07/19/icepatch2/">IcePatch2 命令行使用流程</a></li></ul>
+
+
+    <script>
+        
+    </script></div>
       <footer id="footer">
     <div class="outer">
         <div id="footer-info">

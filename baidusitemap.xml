@@ -3,12 +3,9 @@
 
 
     
-    
-    
-    
   <url>
-    <loc>http://yoursite.com/2017/07/19/icepatch2/</loc>
-    <lastmod>2017-07-19T02:24:36.788Z</lastmod>
+    <loc>https://cmjzzx.github.io/2017/07/19/icepatch2/</loc>
+    <lastmod>2017-07-25T08:39:28.092Z</lastmod>
     <data>
         <display>
         <title>IcePatch2 命令行使用流程</title>
@@ -25,10 +22,35 @@
          
            
              
-              <breadCrumb title="Ice" url="http://yoursite.com/categories/Ice/"/>
+              <breadCrumb title="Ice" url="https://cmjzzx.github.io/categories/Ice/"/>
           
         </display>
     </data>
     </url>
 
+    
+  <url>
+    <loc>https://cmjzzx.github.io/2017/07/24/ice-dev-env/</loc>
+    <lastmod>2017-07-25T08:36:42.836Z</lastmod>
+    <data>
+        <display>
+        <title>搭建 Ice 开发环境</title>
+        <pubTime>2017-07-24T08:43:38.000Z</pubTime>
+        
+        <tag>Ice</tag>
+         
+        <tag>开发环境</tag>
+         
+         
+           
+             
+              <breadCrumb title="Ice" url="https://cmjzzx.github.io/categories/Ice/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+    
 </urlset>

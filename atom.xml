@@ -4,9 +4,9 @@
   <subtitle>Talk is cheap</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://yoursite.com/"/>
-  <updated>2017-07-19T02:24:36.788Z</updated>
-  <id>http://yoursite.com/</id>
+  <link href="https://cmjzzx.github.io/"/>
+  <updated>2017-07-25T08:36:42.836Z</updated>
+  <id>https://cmjzzx.github.io/</id>
   
   <author>
     <name>Zhu Wu</name>
@@ -16,13 +16,287 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>IcePatch2 命令行使用流程</title>
-    <link href="http://yoursite.com/2017/07/19/icepatch2/"/>
-    <id>http://yoursite.com/2017/07/19/icepatch2/</id>
-    <published>2017-07-19T02:08:38.000Z</published>
-    <updated>2017-07-19T02:24:36.788Z</updated>
+    <title>搭建 Ice 开发环境</title>
+    <link href="https://cmjzzx.github.io/2017/07/24/ice-dev-env/"/>
+    <id>https://cmjzzx.github.io/2017/07/24/ice-dev-env/</id>
+    <published>2017-07-24T08:43:38.000Z</published>
+    <updated>2017-07-25T08:36:42.836Z</updated>
     
-    <content type="html"><![CDATA[<ol>
+    <content type="html"><![CDATA[<p>可以使用 Eclipse + Maven 以及 IDEA + Gradle 的方式来开发 Ice 项目，建议使用后者。</p>
+<a id="more"></a>
+<h2 id="选择-Ice-版本"><a href="#选择-Ice-版本" class="headerlink" title="选择 Ice 版本"></a>选择 Ice 版本</h2><p>Ice 版本及相关软件对应关系如下表所示——</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">版本</th>
+<th style="text-align:center">JDK</th>
+<th style="text-align:center">下载</th>
+<th style="text-align:center">构建工具</th>
+<th style="text-align:center">IDE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">3.7</td>
+<td style="text-align:center">1.8</td>
+<td style="text-align:center"><a href="https://dev.zeroc.com/share/ice/v3.7.0-beta0/msi/Ice-3.7b0.msi" target="_blank" rel="external">Windows beta 版本</a></td>
+<td style="text-align:center">Gradle</td>
+<td style="text-align:center">IDEA</td>
+</tr>
+<tr>
+<td style="text-align:center">3.6</td>
+<td style="text-align:center">1.7, 1.8</td>
+<td style="text-align:center"><a href="https://zeroc.com/download/Ice/3.6/Ice-3.6.3-WebInstaller.exe" target="_blank" rel="external">Windows 版本</a></td>
+<td style="text-align:center">Gradle</td>
+<td style="text-align:center">IDEA</td>
+</tr>
+<tr>
+<td style="text-align:center">3.5</td>
+<td style="text-align:center">1.6, 1.7</td>
+<td style="text-align:center"><a href="https://zeroc.com/download/Ice/3.5/Ice-3.5.1-6.msi" target="_blank" rel="external">Windows 版本</a></td>
+<td style="text-align:center">Maven</td>
+<td style="text-align:center">Eclipse</td>
+</tr>
+</tbody>
+</table>
+<p>Ice Linux 版本下载方式详见官网：<a href="https://zeroc.com/distributions/ice" target="_blank" rel="external">https://zeroc.com/distributions/ice</a>。</p>
+<p>建议选择 <strong>Ice 3.6</strong> 版本，如 Ice 3.6.3 作为开发、生产环境使用。Ice 3.7 目前只提供了 beta 版本的下载，Ice 3.5 版本较旧。</p>
+<p>Ice 下载、安装完成后，将其安装路径添加到名为 “ICE_HOME” 的环境变量中，同时添加 “%ICE_HOME%\bin” 到 Path 环境变量中，确保其中的命令行可以在命令行界面或 IDE 中执行。</p>
+<p>上述安装和设置完成后，打开 Windows 命令行，执行 <code>slice2java -v</code>，如果出现版本号，如 “3.6.3”，则表示 Ice 安装成功，可以正常使用了。</p>
+<h2 id="搭建开发环境"><a href="#搭建开发环境" class="headerlink" title="搭建开发环境"></a>搭建开发环境</h2><h3 id="使用-Eclipse-开发-Ice-项目"><a href="#使用-Eclipse-开发-Ice-项目" class="headerlink" title="使用 Eclipse 开发 Ice 项目"></a>使用 Eclipse 开发 Ice 项目</h3><p>使用 Eclipse 开发 Ice 项目，适合 Ice 3.6 以下版本（如 Ice 3.5）。相关软件为——</p>
+<ul>
+<li>JDK，如 jdk1.7.0_80</li>
+<li>Eclipse，如 Eclipse Neon</li>
+<li>Ice for Eclipse 插件</li>
+</ul>
+<p>Ice for Eclipse 插件其实是做了一个 Ant Task，负责把 Slice 文件自动转换为 Java 类。在 Eclipse 中修改了 Slice 文件并保存时，这个插件会自动调用 <code>slice2java.exe</code> 命令生成 Java 源码。</p>
+<p>Eclipse Help → Install New Software，然后输入 <code><a href="http://www.zeroc.com/download/eclipse" target="_blank" rel="external">http://www.zeroc.com/download/eclipse</a></code>，并在出现的结果列表中选择相应的 Ice for Eclipse 项目，安装即可。</p>
+<p>插件安装完成后，需在 Eclipse 中配置 Ice 的安装路径。在 Eclipse 菜单 Window → Preferences 中选择 Ice Builder，然后在右边的 SDK Location 输入框中输入 Ice 的安装路径，如 “C:\Program Files (x86)\ZeroC\Ice-3.6.3”。</p>
+<p>插件安装和设置完成后，我们新建一个 Java 工程 icetest，然后在工程上点击右键，找到 “Ice Builder” 菜单，点击 “Add Ice Builder”。</p>
+<p>我们再看一下项目结构，会发现新增了两个文件夹。一个是 slice 文件夹，这个是用来存放 Slice 文件的地方。另外一个 generated 文件夹，存放的是根据 Slice 文件自动转换生成的 Java 源码，项目编译运行需要用到它们。</p>
+<h4 id="Eclipse-配合-Maven，构建-Ice-项目"><a href="#Eclipse-配合-Maven，构建-Ice-项目" class="headerlink" title="Eclipse 配合 Maven，构建 Ice 项目"></a>Eclipse 配合 Maven，构建 Ice 项目</h4><p>公司的项目绝大多数都已经采用了 Maven 管理和编译，那么怎么用 Maven 来标准化 Ice 项目呢？这里面主要涉及到两个问题：</p>
+<ul>
+<li>Slice 文件在 Maven 里的编译问题</li>
+<li>自动生成的 Ice 服务的代码的位置问题</li>
+</ul>
+<p>为了解决 Slice 的编译问题，Ice 提供了一个 Ant 任务 slice2java，依赖于 Ice 中的 ant-ice.jar（<strong>注意：此 jar 包在 Ice 3.6 及以上版本中不再提供，也即 Ice 3.6 及 Ice 3.7 只支持 Gradle 构建</strong>）：</p>
+<pre><code>&lt;taskdef name=&quot;slice2java&quot; classname=&quot;Slice2JavaTask&quot; classpathref=&quot;maven.plugin.classpath&quot; /&gt;
+</code></pre><p>其用法如下，指定编译哪些文件（includes），以及输出 Java 源文件到哪个目录（outputdir）：</p>
+<pre><code>&lt;slice2java outputdir=&quot;generated&quot;&gt;
+    &lt;fileset dir=&quot;slice&quot; includes=&quot;*.ice&quot;&gt;&lt;/fileset&gt;
+&lt;/slice2java&gt;
+</code></pre><p>我们在标准的 POM 文件中增加 Slice 文件的编译任务，并且增加将编译后的源码加入 Source 的任务，即可解决上面的两个问题。</p>
+<p>完整的 pom.xml 文件如下：</p>
+<pre><code>&lt;project xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;com.ucmed&lt;/groupId&gt;
+    &lt;artifactId&gt;icetest&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+
+    &lt;properties&gt;
+        &lt;slice.home.dir&gt;C:\Program Files (x86)\ZeroC\Ice-3.5.1&lt;/slice.home.dir&gt;
+    &lt;/properties&gt;
+
+    &lt;repositories&gt;
+        &lt;!-- 如有 Nexus 私服, 请添加 --&gt;
+
+        &lt;repository&gt;
+            &lt;id&gt;ice&lt;/id&gt;
+            &lt;name&gt;ice Nexus Repository&lt;/name&gt;
+            &lt;url&gt;https://repo.zeroc.com/nexus/content/repositories/releases/&lt;/url&gt;
+        &lt;/repository&gt;
+    &lt;/repositories&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.zeroc&lt;/groupId&gt;
+            &lt;artifactId&gt;ice&lt;/artifactId&gt;
+            &lt;version&gt;3.5.1&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;artifactId&gt;maven-antrun-plugin&lt;/artifactId&gt;
+                &lt;version&gt;1.7&lt;/version&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;phase&gt;generate-sources&lt;/phase&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;run&lt;/goal&gt;
+                        &lt;/goals&gt;
+                        &lt;configuration&gt;
+                            &lt;target name=&quot;slice2java&quot;&gt;
+                                &lt;taskdef name=&quot;slice2java&quot; classname=&quot;Slice2JavaTask&quot; classpathref=&quot;maven.plugin.classpath&quot; /&gt;
+                                &lt;slice2java outputdir=&quot;generated&quot;&gt;
+                                    &lt;fileset dir=&quot;slice&quot; includes=&quot;*.ice&quot;&gt;&lt;/fileset&gt;
+                                &lt;/slice2java&gt;
+                            &lt;/target&gt;
+                        &lt;/configuration&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+                &lt;dependencies&gt;
+                    &lt;dependency&gt;
+                        &lt;groupId&gt;com.zeroc&lt;/groupId&gt;
+                        &lt;artifactId&gt;ant-ice&lt;/artifactId&gt;
+                        &lt;scope&gt;system&lt;/scope&gt;
+                        &lt;systemPath&gt;${slice.home.dir}\lib\ant-ice.jar&lt;/systemPath&gt;
+                    &lt;/dependency&gt;
+                &lt;/dependencies&gt;
+            &lt;/plugin&gt;
+
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+                &lt;artifactId&gt;build-helper-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;1.7&lt;/version&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;id&gt;add-source&lt;/id&gt;
+                        &lt;phase&gt;generate-sources&lt;/phase&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;add-source&lt;/goal&gt;
+                        &lt;/goals&gt;
+                        &lt;configuration&gt;
+                            &lt;sources&gt;
+                                &lt;source&gt;generated&lt;/source&gt;
+                            &lt;/sources&gt;
+                        &lt;/configuration&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                &lt;version&gt;3.1&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;source&gt;1.7&lt;/source&gt;
+                    &lt;target&gt;1.7&lt;/target&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+&lt;/project&gt;
+</code></pre><h3 id="使用-IDEA-开发-Ice-项目"><a href="#使用-IDEA-开发-Ice-项目" class="headerlink" title="使用 IDEA 开发 Ice 项目"></a>使用 IDEA 开发 Ice 项目</h3><p>使用 IDEA 开发 Ice 项目，适合 Ice 3.6 及以上版本（如 Ice 3.6.3）相关软件为——</p>
+<ul>
+<li>JDK，如 jdk1.8.0_111</li>
+<li>IntelliJ IDEA，如 IDEA 2017.2</li>
+</ul>
+<h4 id="IDEA-配合-Gradle，构建-Ice-项目"><a href="#IDEA-配合-Gradle，构建-Ice-项目" class="headerlink" title="IDEA 配合 Gradle，构建 Ice 项目"></a>IDEA 配合 Gradle，构建 Ice 项目</h4><p>关于 Gradle 的使用，这里不过多介绍，下面来看一个写好的 build.gradle 文件吧。</p>
+<pre><code>// 项目标识
+group &apos;com.ucmed.ice.study&apos;
+version &apos;1.0-SNAPSHOT&apos;
+
+// 使用 java 插件
+apply plugin: &apos;java&apos;
+
+// 源码兼容级别
+sourceCompatibility = 1.8
+
+// 仓库
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url &apos;http://192.168.0.114:8081/nexus/content/repositories/releases&apos;
+    }
+    maven {
+        url &apos;https://repo.zeroc.com/nexus/content/repositories/releases&apos;
+    }
+}
+
+// 项目依赖
+dependencies {
+    compile &apos;com.zeroc:ice:3.6.3&apos;
+    compile &apos;com.zeroc:icebox:3.6.3&apos;
+    compile &apos;org.slf4j:slf4j-api:1.7.9&apos;
+    compile &apos;ch.qos.logback:logback-classic:1.2.3&apos;
+    compile &apos;ch.qos.logback:logback-core:1.2.3&apos;
+    compile &apos;org.springframework:spring-context:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-beans:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-core:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-web:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-webmvc:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-aop:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-context-support:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-tx:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-orm:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-jdbc:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-expression:4.2.5.RELEASE&apos;
+    compile &apos;org.hibernate:hibernate-core:5.2.10.Final&apos;
+    compile &apos;org.apache.commons:commons-dbcp2:2.1.1&apos;
+    compile &apos;mysql:mysql-connector-java:6.0.6&apos;
+    testCompile &apos;junit:junit:4.12&apos;
+}
+
+// compileSlice 任务，编译 Slice 文件，生成 Java 源码
+task compileSlice(type: Exec) {
+
+//    commandLine &apos;slice2java&apos;, &apos;--output-dir&apos;, &quot;${projectDir}/src/main/java&quot;,
+//            &quot;${projectDir}/slice/TicketServer.ice&quot;
+
+    // output-dir 此目录存放自动生成的 Java 源码
+    // underscore 允许 Slice 标识符带有下划线
+    commandLine &apos;slice2java&apos;, &apos;--underscore&apos;, &apos;--output-dir&apos;, &quot;${projectDir}/src/main/java&quot;,
+            &quot;${projectDir}/slice/DoctorServer.ice&quot;
+
+    // 后续如果有其他 Slice 文件需要编译成 Java 文件，就按照上面的格式，在这里添加即可
+    // 记得添加完成后，点击 IDEA 右边的 Gradle 工具条，手动运行 compileSlice 任务，或直接点击 assemble/build 构建
+
+    standardOutput = new ByteArrayOutputStream()
+
+    ext.output = {
+        println standardOutput.toString()
+    }
+
+}
+
+// copyJars 任务，是我们自定义的任务，它将项目依赖的 jar 包拷贝到项目根目录下的 lib 文件夹，以供 IceGrid 使用 
+task copyJars(type: Copy) {
+    from configurations.runtime
+    into &apos;lib&apos;
+}
+
+// 设置 UTF-8 编码，以免 Java 源码中出现中文乱码
+tasks.withType(JavaCompile) {
+    options.encoding = &quot;UTF-8&quot;
+}
+
+// compileJava 任务依赖 compileSlice 任务   
+gradle.projectsEvaluated {
+    compileJava.dependsOn(compileSlice)
+} 
+</code></pre><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>建议使用 Gradle 构建 Ice 项目</strong>，以使用 Ice 的新发布版本，体验最新的特性和及时的 Bug 修复。可以在上面这个 build.gradle 文件的基础上进行相应改动，以满足实际项目需要。</p>
+<p>开发时，可以在 IDEA 中配置本地安装好的 gradle 版本。Ice 官方使用的 gradlew 要下载全部版本的 gradle ，由于众所周知的网络原因，下载时基本都会卡住不动，所以不推荐。 </p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;可以使用 Eclipse + Maven 以及 IDEA + Gradle 的方式来开发 Ice 项目，建议使用后者。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Ice" scheme="https://cmjzzx.github.io/categories/Ice/"/>
+    
+    
+      <category term="Ice" scheme="https://cmjzzx.github.io/tags/Ice/"/>
+    
+      <category term="开发环境" scheme="https://cmjzzx.github.io/tags/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>IcePatch2 命令行使用流程</title>
+    <link href="https://cmjzzx.github.io/2017/07/19/icepatch2/"/>
+    <id>https://cmjzzx.github.io/2017/07/19/icepatch2/</id>
+    <published>2017-07-19T02:08:38.000Z</published>
+    <updated>2017-07-25T08:39:28.092Z</updated>
+    
+    <content type="html"><![CDATA[<p>IcePatch2 是 Ice 提供的部署工具，可以方便地实现分布式应用的服务部署与更新。</p>
+<a id="more"></a>
+<ol>
 <li>编写一份配置文件，如：config.server，主要定义 <code>IcePatch2.InstanceName</code>、<code>IcePatch2.Endpoints</code>、<code>IcePatch2.Directory</code> 这 3 个属性。</li>
 <li>然后创建待同步的 server 端数据目录，如：serverData，里面存放待同步的目录及文件。</li>
 <li>运行 <code>icepatch2calc serverData</code>，压缩非空文件，计算校验和生成 IcePatch2.sum 文件。</li>
@@ -35,21 +309,20 @@
     
     <summary type="html">
     
-      &lt;ol&gt;
-&lt;li&gt;编写一份配置文件，如：config.server，主要定义 &lt;code&gt;IcePatch2.InstanceName&lt;/code&gt;、&lt;code&gt;IcePatch2.Endpoints&lt;/code&gt;、&lt;code&gt;IcePatch2.Directory&lt;/code&gt;
+      &lt;p&gt;IcePatch2 是 Ice 提供的部署工具，可以方便地实现分布式应用的服务部署与更新。&lt;/p&gt;
     
     </summary>
     
-      <category term="Ice" scheme="http://yoursite.com/categories/Ice/"/>
+      <category term="Ice" scheme="https://cmjzzx.github.io/categories/Ice/"/>
     
     
-      <category term="Ice" scheme="http://yoursite.com/tags/Ice/"/>
+      <category term="Ice" scheme="https://cmjzzx.github.io/tags/Ice/"/>
     
-      <category term="IcePatch2" scheme="http://yoursite.com/tags/IcePatch2/"/>
+      <category term="IcePatch2" scheme="https://cmjzzx.github.io/tags/IcePatch2/"/>
     
-      <category term="应用部署" scheme="http://yoursite.com/tags/%E5%BA%94%E7%94%A8%E9%83%A8%E7%BD%B2/"/>
+      <category term="应用部署" scheme="https://cmjzzx.github.io/tags/%E5%BA%94%E7%94%A8%E9%83%A8%E7%BD%B2/"/>
     
-      <category term="应用升级" scheme="http://yoursite.com/tags/%E5%BA%94%E7%94%A8%E5%8D%87%E7%BA%A7/"/>
+      <category term="应用升级" scheme="https://cmjzzx.github.io/tags/%E5%BA%94%E7%94%A8%E5%8D%87%E7%BA%A7/"/>
     
   </entry>
   

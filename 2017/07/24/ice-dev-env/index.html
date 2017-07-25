@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="author" content="Zhu Wu">
+
+
+
+<meta name="description" content="可以使用 Eclipse + Maven 以及 IDEA + Gradle 的方式来开发 Ice 项目，建议使用后者。">
+<meta name="keywords" content="Ice,开发环境">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建 Ice 开发环境">
+<meta property="og:url" content="https://cmjzzx.github.io/2017/07/24/ice-dev-env/index.html">
+<meta property="og:site_name" content="Random Thoughts">
+<meta property="og:description" content="可以使用 Eclipse + Maven 以及 IDEA + Gradle 的方式来开发 Ice 项目，建议使用后者。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-07-25T08:36:42.836Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="搭建 Ice 开发环境">
+<meta name="twitter:description" content="可以使用 Eclipse + Maven 以及 IDEA + Gradle 的方式来开发 Ice 项目，建议使用后者。">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Random Thoughts" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>搭建 Ice 开发环境 | Random Thoughts</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?3392abd396ab6314867d9e109c1a734d";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Zhu Wu</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">Talk is cheap</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false">
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class="no-result">No results found <i class="fa fa-spinner fa-pulse"></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>Menu</li>
+                        <li>Tags</li>
+                        
+                        <li>Friends</li>
+                        
+                        
+                        <li>About Me</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:huoliuxing0503@gmail.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/cmjzzx" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ice/">Ice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IcePatch2/">IcePatch2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/应用升级/">应用升级</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/应用部署/">应用部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发环境/">开发环境</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于技术</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Zhu Wu</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Zhu Wu</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">Talk is cheap</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:huoliuxing0503@gmail.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/cmjzzx" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="Tags" friends="Friends" about="About Me">
+</nav>
+      <div class="body-wrap"><article id="post-ice-dev-env" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/07/24/ice-dev-env/" class="article-date">
+      <time datetime="2017-07-24T08:43:38.000Z" itemprop="datePublished">2017-07-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        <h1 class="article-title" itemprop="name">
+      搭建 Ice 开发环境
+    </h1>
+      </header>
+      
+      <div class="article-info article-info-post">
+        <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Ice/">Ice</a>
+    </div>
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ice/">Ice</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发环境/">开发环境</a></li></ul>
+    </div>
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>可以使用 Eclipse + Maven 以及 IDEA + Gradle 的方式来开发 Ice 项目，建议使用后者。</p>
+<a id="more"></a>
+<h2 id="选择-Ice-版本"><a href="#选择-Ice-版本" class="headerlink" title="选择 Ice 版本"></a>选择 Ice 版本</h2><p>Ice 版本及相关软件对应关系如下表所示——</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">版本</th>
+<th style="text-align:center">JDK</th>
+<th style="text-align:center">下载</th>
+<th style="text-align:center">构建工具</th>
+<th style="text-align:center">IDE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">3.7</td>
+<td style="text-align:center">1.8</td>
+<td style="text-align:center"><a href="https://dev.zeroc.com/share/ice/v3.7.0-beta0/msi/Ice-3.7b0.msi" target="_blank" rel="external">Windows beta 版本</a></td>
+<td style="text-align:center">Gradle</td>
+<td style="text-align:center">IDEA</td>
+</tr>
+<tr>
+<td style="text-align:center">3.6</td>
+<td style="text-align:center">1.7, 1.8</td>
+<td style="text-align:center"><a href="https://zeroc.com/download/Ice/3.6/Ice-3.6.3-WebInstaller.exe" target="_blank" rel="external">Windows 版本</a></td>
+<td style="text-align:center">Gradle</td>
+<td style="text-align:center">IDEA</td>
+</tr>
+<tr>
+<td style="text-align:center">3.5</td>
+<td style="text-align:center">1.6, 1.7</td>
+<td style="text-align:center"><a href="https://zeroc.com/download/Ice/3.5/Ice-3.5.1-6.msi" target="_blank" rel="external">Windows 版本</a></td>
+<td style="text-align:center">Maven</td>
+<td style="text-align:center">Eclipse</td>
+</tr>
+</tbody>
+</table>
+<p>Ice Linux 版本下载方式详见官网：<a href="https://zeroc.com/distributions/ice" target="_blank" rel="external">https://zeroc.com/distributions/ice</a>。</p>
+<p>建议选择 <strong>Ice 3.6</strong> 版本，如 Ice 3.6.3 作为开发、生产环境使用。Ice 3.7 目前只提供了 beta 版本的下载，Ice 3.5 版本较旧。</p>
+<p>Ice 下载、安装完成后，将其安装路径添加到名为 “ICE_HOME” 的环境变量中，同时添加 “%ICE_HOME%\bin” 到 Path 环境变量中，确保其中的命令行可以在命令行界面或 IDE 中执行。</p>
+<p>上述安装和设置完成后，打开 Windows 命令行，执行 <code>slice2java -v</code>，如果出现版本号，如 “3.6.3”，则表示 Ice 安装成功，可以正常使用了。</p>
+<h2 id="搭建开发环境"><a href="#搭建开发环境" class="headerlink" title="搭建开发环境"></a>搭建开发环境</h2><h3 id="使用-Eclipse-开发-Ice-项目"><a href="#使用-Eclipse-开发-Ice-项目" class="headerlink" title="使用 Eclipse 开发 Ice 项目"></a>使用 Eclipse 开发 Ice 项目</h3><p>使用 Eclipse 开发 Ice 项目，适合 Ice 3.6 以下版本（如 Ice 3.5）。相关软件为——</p>
+<ul>
+<li>JDK，如 jdk1.7.0_80</li>
+<li>Eclipse，如 Eclipse Neon</li>
+<li>Ice for Eclipse 插件</li>
+</ul>
+<p>Ice for Eclipse 插件其实是做了一个 Ant Task，负责把 Slice 文件自动转换为 Java 类。在 Eclipse 中修改了 Slice 文件并保存时，这个插件会自动调用 <code>slice2java.exe</code> 命令生成 Java 源码。</p>
+<p>Eclipse Help → Install New Software，然后输入 <code><a href="http://www.zeroc.com/download/eclipse" target="_blank" rel="external">http://www.zeroc.com/download/eclipse</a></code>，并在出现的结果列表中选择相应的 Ice for Eclipse 项目，安装即可。</p>
+<p>插件安装完成后，需在 Eclipse 中配置 Ice 的安装路径。在 Eclipse 菜单 Window → Preferences 中选择 Ice Builder，然后在右边的 SDK Location 输入框中输入 Ice 的安装路径，如 “C:\Program Files (x86)\ZeroC\Ice-3.6.3”。</p>
+<p>插件安装和设置完成后，我们新建一个 Java 工程 icetest，然后在工程上点击右键，找到 “Ice Builder” 菜单，点击 “Add Ice Builder”。</p>
+<p>我们再看一下项目结构，会发现新增了两个文件夹。一个是 slice 文件夹，这个是用来存放 Slice 文件的地方。另外一个 generated 文件夹，存放的是根据 Slice 文件自动转换生成的 Java 源码，项目编译运行需要用到它们。</p>
+<h4 id="Eclipse-配合-Maven，构建-Ice-项目"><a href="#Eclipse-配合-Maven，构建-Ice-项目" class="headerlink" title="Eclipse 配合 Maven，构建 Ice 项目"></a>Eclipse 配合 Maven，构建 Ice 项目</h4><p>公司的项目绝大多数都已经采用了 Maven 管理和编译，那么怎么用 Maven 来标准化 Ice 项目呢？这里面主要涉及到两个问题：</p>
+<ul>
+<li>Slice 文件在 Maven 里的编译问题</li>
+<li>自动生成的 Ice 服务的代码的位置问题</li>
+</ul>
+<p>为了解决 Slice 的编译问题，Ice 提供了一个 Ant 任务 slice2java，依赖于 Ice 中的 ant-ice.jar（<strong>注意：此 jar 包在 Ice 3.6 及以上版本中不再提供，也即 Ice 3.6 及 Ice 3.7 只支持 Gradle 构建</strong>）：</p>
+<pre><code>&lt;taskdef name=&quot;slice2java&quot; classname=&quot;Slice2JavaTask&quot; classpathref=&quot;maven.plugin.classpath&quot; /&gt;
+</code></pre><p>其用法如下，指定编译哪些文件（includes），以及输出 Java 源文件到哪个目录（outputdir）：</p>
+<pre><code>&lt;slice2java outputdir=&quot;generated&quot;&gt;
+    &lt;fileset dir=&quot;slice&quot; includes=&quot;*.ice&quot;&gt;&lt;/fileset&gt;
+&lt;/slice2java&gt;
+</code></pre><p>我们在标准的 POM 文件中增加 Slice 文件的编译任务，并且增加将编译后的源码加入 Source 的任务，即可解决上面的两个问题。</p>
+<p>完整的 pom.xml 文件如下：</p>
+<pre><code>&lt;project xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;com.ucmed&lt;/groupId&gt;
+    &lt;artifactId&gt;icetest&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+
+    &lt;properties&gt;
+        &lt;slice.home.dir&gt;C:\Program Files (x86)\ZeroC\Ice-3.5.1&lt;/slice.home.dir&gt;
+    &lt;/properties&gt;
+
+    &lt;repositories&gt;
+        &lt;!-- 如有 Nexus 私服, 请添加 --&gt;
+
+        &lt;repository&gt;
+            &lt;id&gt;ice&lt;/id&gt;
+            &lt;name&gt;ice Nexus Repository&lt;/name&gt;
+            &lt;url&gt;https://repo.zeroc.com/nexus/content/repositories/releases/&lt;/url&gt;
+        &lt;/repository&gt;
+    &lt;/repositories&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.zeroc&lt;/groupId&gt;
+            &lt;artifactId&gt;ice&lt;/artifactId&gt;
+            &lt;version&gt;3.5.1&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;artifactId&gt;maven-antrun-plugin&lt;/artifactId&gt;
+                &lt;version&gt;1.7&lt;/version&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;phase&gt;generate-sources&lt;/phase&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;run&lt;/goal&gt;
+                        &lt;/goals&gt;
+                        &lt;configuration&gt;
+                            &lt;target name=&quot;slice2java&quot;&gt;
+                                &lt;taskdef name=&quot;slice2java&quot; classname=&quot;Slice2JavaTask&quot; classpathref=&quot;maven.plugin.classpath&quot; /&gt;
+                                &lt;slice2java outputdir=&quot;generated&quot;&gt;
+                                    &lt;fileset dir=&quot;slice&quot; includes=&quot;*.ice&quot;&gt;&lt;/fileset&gt;
+                                &lt;/slice2java&gt;
+                            &lt;/target&gt;
+                        &lt;/configuration&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+                &lt;dependencies&gt;
+                    &lt;dependency&gt;
+                        &lt;groupId&gt;com.zeroc&lt;/groupId&gt;
+                        &lt;artifactId&gt;ant-ice&lt;/artifactId&gt;
+                        &lt;scope&gt;system&lt;/scope&gt;
+                        &lt;systemPath&gt;${slice.home.dir}\lib\ant-ice.jar&lt;/systemPath&gt;
+                    &lt;/dependency&gt;
+                &lt;/dependencies&gt;
+            &lt;/plugin&gt;
+
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+                &lt;artifactId&gt;build-helper-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;1.7&lt;/version&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;id&gt;add-source&lt;/id&gt;
+                        &lt;phase&gt;generate-sources&lt;/phase&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;add-source&lt;/goal&gt;
+                        &lt;/goals&gt;
+                        &lt;configuration&gt;
+                            &lt;sources&gt;
+                                &lt;source&gt;generated&lt;/source&gt;
+                            &lt;/sources&gt;
+                        &lt;/configuration&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                &lt;version&gt;3.1&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;source&gt;1.7&lt;/source&gt;
+                    &lt;target&gt;1.7&lt;/target&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+&lt;/project&gt;
+</code></pre><h3 id="使用-IDEA-开发-Ice-项目"><a href="#使用-IDEA-开发-Ice-项目" class="headerlink" title="使用 IDEA 开发 Ice 项目"></a>使用 IDEA 开发 Ice 项目</h3><p>使用 IDEA 开发 Ice 项目，适合 Ice 3.6 及以上版本（如 Ice 3.6.3）相关软件为——</p>
+<ul>
+<li>JDK，如 jdk1.8.0_111</li>
+<li>IntelliJ IDEA，如 IDEA 2017.2</li>
+</ul>
+<h4 id="IDEA-配合-Gradle，构建-Ice-项目"><a href="#IDEA-配合-Gradle，构建-Ice-项目" class="headerlink" title="IDEA 配合 Gradle，构建 Ice 项目"></a>IDEA 配合 Gradle，构建 Ice 项目</h4><p>关于 Gradle 的使用，这里不过多介绍，下面来看一个写好的 build.gradle 文件吧。</p>
+<pre><code>// 项目标识
+group &apos;com.ucmed.ice.study&apos;
+version &apos;1.0-SNAPSHOT&apos;
+
+// 使用 java 插件
+apply plugin: &apos;java&apos;
+
+// 源码兼容级别
+sourceCompatibility = 1.8
+
+// 仓库
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url &apos;http://192.168.0.114:8081/nexus/content/repositories/releases&apos;
+    }
+    maven {
+        url &apos;https://repo.zeroc.com/nexus/content/repositories/releases&apos;
+    }
+}
+
+// 项目依赖
+dependencies {
+    compile &apos;com.zeroc:ice:3.6.3&apos;
+    compile &apos;com.zeroc:icebox:3.6.3&apos;
+    compile &apos;org.slf4j:slf4j-api:1.7.9&apos;
+    compile &apos;ch.qos.logback:logback-classic:1.2.3&apos;
+    compile &apos;ch.qos.logback:logback-core:1.2.3&apos;
+    compile &apos;org.springframework:spring-context:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-beans:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-core:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-web:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-webmvc:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-aop:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-context-support:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-tx:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-orm:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-jdbc:4.2.5.RELEASE&apos;
+    compile &apos;org.springframework:spring-expression:4.2.5.RELEASE&apos;
+    compile &apos;org.hibernate:hibernate-core:5.2.10.Final&apos;
+    compile &apos;org.apache.commons:commons-dbcp2:2.1.1&apos;
+    compile &apos;mysql:mysql-connector-java:6.0.6&apos;
+    testCompile &apos;junit:junit:4.12&apos;
+}
+
+// compileSlice 任务，编译 Slice 文件，生成 Java 源码
+task compileSlice(type: Exec) {
+
+//    commandLine &apos;slice2java&apos;, &apos;--output-dir&apos;, &quot;${projectDir}/src/main/java&quot;,
+//            &quot;${projectDir}/slice/TicketServer.ice&quot;
+
+    // output-dir 此目录存放自动生成的 Java 源码
+    // underscore 允许 Slice 标识符带有下划线
+    commandLine &apos;slice2java&apos;, &apos;--underscore&apos;, &apos;--output-dir&apos;, &quot;${projectDir}/src/main/java&quot;,
+            &quot;${projectDir}/slice/DoctorServer.ice&quot;
+
+    // 后续如果有其他 Slice 文件需要编译成 Java 文件，就按照上面的格式，在这里添加即可
+    // 记得添加完成后，点击 IDEA 右边的 Gradle 工具条，手动运行 compileSlice 任务，或直接点击 assemble/build 构建
+
+    standardOutput = new ByteArrayOutputStream()
+
+    ext.output = {
+        println standardOutput.toString()
+    }
+
+}
+
+// copyJars 任务，是我们自定义的任务，它将项目依赖的 jar 包拷贝到项目根目录下的 lib 文件夹，以供 IceGrid 使用 
+task copyJars(type: Copy) {
+    from configurations.runtime
+    into &apos;lib&apos;
+}
+
+// 设置 UTF-8 编码，以免 Java 源码中出现中文乱码
+tasks.withType(JavaCompile) {
+    options.encoding = &quot;UTF-8&quot;
+}
+
+// compileJava 任务依赖 compileSlice 任务   
+gradle.projectsEvaluated {
+    compileJava.dependsOn(compileSlice)
+} 
+</code></pre><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>建议使用 Gradle 构建 Ice 项目</strong>，以使用 Ice 的新发布版本，体验最新的特性和及时的 Bug 修复。可以在上面这个 build.gradle 文件的基础上进行相应改动，以满足实际项目需要。</p>
+<p>开发时，可以在 IDEA 中配置本地安装好的 gradle 版本。Ice 官方使用的 gradlew 要下载全部版本的 gradle ，由于众所周知的网络原因，下载时基本都会卡住不动，所以不推荐。 </p>
+      
+    </div>
+    
+  </div>
+  
+    <div class="copyright">
+        <p><span>Title:</span><a href="/2017/07/24/ice-dev-env/">搭建 Ice 开发环境</a></p>
+        <p><span>Author:</span><a href="/" title="Back to Homepage">Zhu Wu</a></p>
+        <p><span>Created:</span>2017-07-24, 16:43:38</p>
+        <p><span>Updated:</span>2017-07-25, 16:36:42</p>
+        <p>
+            <span>Full URL:</span><a class="post-url" href="/2017/07/24/ice-dev-env/" title="搭建 Ice 开发环境">https://cmjzzx.github.io/2017/07/24/ice-dev-env/</a>
+            <span class="copy-path" data-clipboard-text="From https://cmjzzx.github.io/2017/07/24/ice-dev-env/　　By Zhu Wu" title="Copy Article&#39;s Link &amp; Author"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>License:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"CC BY-NC-SA 4.0"</a> Keep Link &amp; Author if Distribute.
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/07/19/icepatch2/">
+                    IcePatch2 命令行使用流程
+                </a>
+            </div>
+        
+    </nav>
+  
+</article>
+<div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#选择-Ice-版本"><span class="toc-number">1.</span> <span class="toc-text">选择 Ice 版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#搭建开发环境"><span class="toc-number">2.</span> <span class="toc-text">搭建开发环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-Eclipse-开发-Ice-项目"><span class="toc-number">2.1.</span> <span class="toc-text">使用 Eclipse 开发 Ice 项目</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Eclipse-配合-Maven，构建-Ice-项目"><span class="toc-number">2.1.1.</span> <span class="toc-text">Eclipse 配合 Maven，构建 Ice 项目</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-IDEA-开发-Ice-项目"><span class="toc-number">2.2.</span> <span class="toc-text">使用 IDEA 开发 Ice 项目</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#IDEA-配合-Gradle，构建-Ice-项目"><span class="toc-number">2.2.1.</span> <span class="toc-text">IDEA 配合 Gradle，构建 Ice 项目</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="Hide" title="Show or Hide Table of Contents">
+
+    <script>
+        yiliaConfig.toc = ["Hide", "Show", !!"false"];
+    </script>
+
+
+    <div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"搭建 Ice 开发环境　| Random Thoughts　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2118965';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    <script> loadComment(); </script>
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+<div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="Back to Homepage"><i class="fa fa-home"></i></a>
+        
+
+        <a title="Mini Archives"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/07/19/icepatch2/" title="Next: IcePatch2 命令行使用流程">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/07/24/ice-dev-env/">搭建 Ice 开发环境</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/19/icepatch2/">IcePatch2 命令行使用流程</a></li></ul>
+
+
+    <script>
+        
+    </script></div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2017 Zhu Wu
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="A fast, simple &amp; powerful blog framework">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="Another simple and elegant theme for Hexo  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="site-visit" title="Site Visitors"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style="display:none">
+                        <span id="page-visit" title="Page Hits"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    <script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="Back to Top"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide()" title="Comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="Go to Bottom"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>

@@ -4,6 +4,30 @@
 
     
   <url>
+    <loc>https://cmjzzx.github.io/2017/07/25/ice-log/</loc>
+    <lastmod>2017-07-25T11:50:56.164Z</lastmod>
+    <data>
+        <display>
+        <title>Ice 使用自定义日志</title>
+        <pubTime>2017-07-25T09:14:14.000Z</pubTime>
+        
+        <tag>Ice</tag>
+         
+        <tag>日志</tag>
+         
+         
+           
+             
+              <breadCrumb title="Ice" url="https://cmjzzx.github.io/categories/Ice/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+    
+  <url>
     <loc>https://cmjzzx.github.io/2017/07/19/icepatch2/</loc>
     <lastmod>2017-07-25T08:39:28.092Z</lastmod>
     <data>
@@ -50,7 +74,5 @@
     </data>
     </url>
 
-    
-    
     
 </urlset>

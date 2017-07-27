@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://cmjzzx.github.io/"/>
-  <updated>2017-07-25T11:50:56.164Z</updated>
+  <updated>2017-07-26T07:15:23.643Z</updated>
   <id>https://cmjzzx.github.io/</id>
   
   <author>
@@ -14,6 +14,252 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Ice 集成 Spring</title>
+    <link href="https://cmjzzx.github.io/2017/07/26/ice-spring/"/>
+    <id>https://cmjzzx.github.io/2017/07/26/ice-spring/</id>
+    <published>2017-07-26T06:08:12.000Z</published>
+    <updated>2017-07-26T07:15:23.643Z</updated>
+    
+    <content type="html"><![CDATA[<p>把 Spring Framework 集成到 Ice 服务开发中其实很简单，我们只要确保 SpringContext 在一个 JVM 中只有一个实例即可。</p>
+<a id="more"></a>
+<p>另外一个需要注意的问题是我们需要注册 SpringContext 的 Shutdown hook，以便 JVM 在关闭时释放资源。</p>
+<h2 id="编写工具类"><a href="#编写工具类" class="headerlink" title="编写工具类"></a>编写工具类</h2><p>我们写个简单的静态工具类，之后 Ice Object 中就可以通过调用 <code>SpringUtil.getBean(Class<t> clazz)</t></code> 获取到对应的 Bean 来完成具体业务操作了。</p>
+<pre><code>public class SpringUtil {
+    private static ClassPathXmlApplicationContext ctx;
+
+    public static synchronized &lt;T&gt; T getBean(Class&lt;T&gt; beanCls) {
+        if (ctx == null) {
+            ctx = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
+            ctx.registerShutdownHook();
+        }
+
+        return ctx.getBean(beanCls);
+    }
+
+    public static synchronized void shutdown() {
+        if (ctx != null) {
+            ctx.close();
+            ctx = null;
+        }
+    }
+}
+</code></pre><p>这里使用的是 ClassPathXmlApplicationContext，所以我们在 /src/main/resources 目录下编写一个 applicationContext.xml 文件就可以了。</p>
+<h2 id="补充说明"><a href="#补充说明" class="headerlink" title="补充说明"></a>补充说明</h2><p>最后需要说明的是，Spring 中的 Bean 都<strong>应该设置为 Lazy init</strong>。只有它们被真正调用时才触发创建过程，这在大量部署实例时是很关键的一个设置。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;把 Spring Framework 集成到 Ice 服务开发中其实很简单，我们只要确保 SpringContext 在一个 JVM 中只有一个实例即可。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Ice" scheme="https://cmjzzx.github.io/categories/Ice/"/>
+    
+    
+      <category term="Ice" scheme="https://cmjzzx.github.io/tags/Ice/"/>
+    
+      <category term="Spring" scheme="https://cmjzzx.github.io/tags/Spring/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>封装 Ice 客户端</title>
+    <link href="https://cmjzzx.github.io/2017/07/26/ice-client/"/>
+    <id>https://cmjzzx.github.io/2017/07/26/ice-client/</id>
+    <published>2017-07-26T01:27:42.000Z</published>
+    <updated>2017-07-26T02:19:52.856Z</updated>
+    
+    <content type="html"><![CDATA[<p>Ice 客户端的标准写法既繁琐又不利于复用，能否封装一个工具类来获取 Ice 客户端呢？</p>
+<a id="more"></a>
+<h2 id="Ice-客户端的标准写法"><a href="#Ice-客户端的标准写法" class="headerlink" title="Ice 客户端的标准写法"></a>Ice 客户端的标准写法</h2><pre><code>Ice.Communicator ic = null;
+try {
+    // 初始化通信器
+    ic = Ice.Util.initialize(args);
+
+    Ice.ObjectPrx base = ic.stringToProxy(&quot;Foo:default -p 10000&quot;);
+    FooServicePrx proxy = FooServiceHelper.checkedCast(base);
+
+    if (proxy == null) {
+        throw new Error(&quot;Invalid proxy&quot;);
+    } 
+} catch(Exception e) {
+    e.printStackTrace();
+} finally {
+    if (ic != null) {
+        ic.destroy();
+    }
+}
+</code></pre><p>这里存在以下几个问题。</p>
+<ul>
+<li>Locator 地址不能写死在代码里，它属于共用部分配置</li>
+<li>Communicator 是重量级全局共享的对象，涉及线程池、Socket 连接等，每次的创建和销毁既影响性能又容易产生泄漏问题</li>
+<li>Ice Object 的标识符（Identity，如上面的 Foo）与类名有 99% 的可能性是重合的，Identity + Prx 相当于是 Object Proxy 的类名</li>
+<li>客户端的代码还是有点多</li>
+</ul>
+<h2 id="封装一个-Ice-客户端工具类"><a href="#封装一个-Ice-客户端工具类" class="headerlink" title="封装一个 Ice 客户端工具类"></a>封装一个 Ice 客户端工具类</h2><p>因此，我们可以写一个工具类，思路如下：</p>
+<blockquote>读取配置文件，获得 Locator 地址并创建全局静态 Communicator 对象。在访问某个 Ice Object Proxy 时，根据其类名反推 Ice Object 的标识符，用反射方法生成Proxy 对象并返回。由于<br>Proxy 可能被多次使用，因此用 Map 缓存 Proxy，下次调用就不用再生成了。同时启动一个线程，在超过一定的闲置时间后，就关闭 Communicator 对象并移除 Map 中的 Proxy，释放资源。</blockquote>
+
+<p>下面是具体的代码实现：</p>
+<pre><code>package com.ucmed.foo.util
+
+import Ice.ObjectPrx;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+public class IceClientUtil {
+    private static final String locatorKey = &quot;--Ice.Default.Locator&quot;;
+    private static Logger logger = LoggerFactory.getLogger(IceClientUtil.class);
+    private static volatile Ice.Communicator ic = null;
+    private static Map&lt;Class, ObjectPrx&gt; cls2PrxMap = new HashMap&lt;&gt;();
+    private static volatile long lastAccessTimestamp;
+    private static volatile MonitorThread monitorThread;
+    private static long idleTimeOutSeconds = 0;
+    private static String iceLocator = null;
+
+    // 延迟加载 Communicator
+    public static Ice.Communicator getIceCommunicator() {
+        if (ic == null) {
+            synchronized (IceClientUtil.class) {
+                if (ic == null) {
+                    ResourceBundle resourceBundle = ResourceBundle.getBundle(&quot;iceclient&quot;, Locale.ENGLISH);
+                    iceLocator = resourceBundle.getString(locatorKey);
+                    idleTimeOutSeconds = Integer.parseInt(resourceBundle.getString(&quot;idleTimeOutSeconds&quot;));
+
+                    logger.info(&quot;Ice client&apos;s locator is &quot; + iceLocator + &quot;, proxy cache timeout seconds:&quot; +
+                            idleTimeOutSeconds);
+
+                    String[] initParams = new String[]{locatorKey + &quot;=&quot; + iceLocator};
+                    ic = Ice.Util.initialize(initParams);
+
+                    createMonitorThread();
+                }
+            }
+        }
+        lastAccessTimestamp = System.currentTimeMillis();
+        return ic;
+    }
+
+    // 创建并开启（守护）线程
+    private static void createMonitorThread() {
+        monitorThread = new MonitorThread();
+        monitorThread.setDaemon(true);
+        monitorThread.start();
+    }
+
+    // 关闭 Communicator，释放资源
+    static void closeCommunicator(boolean removeServiceCache) {
+        synchronized (IceClientUtil.class) {
+            if (ic != null) {
+                safeShutdown();
+                monitorThread.interrupt();
+
+                if (removeServiceCache &amp;&amp; !cls2PrxMap.isEmpty()) {
+                    try {
+                        cls2PrxMap.clear();
+                    } catch (Exception e) {
+                        logger.error(&quot;Map 清理失败：&quot; + e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
+    private static void safeShutdown() {
+        try {
+            ic.shutdown();
+        } catch (Exception e) {
+            logger.error(&quot;Ice.Communicator 关闭失败：&quot; + e.getMessage());
+        } finally {
+            ic.destroy();
+            ic = null;
+        }
+    }
+
+    // 反射创建 Object Proxy
+    private static ObjectPrx createIceProxy(Ice.Communicator communicator, Class serviceCls) {
+        ObjectPrx proxy;
+        String clsName = serviceCls.getName();
+        String serviceName = serviceCls.getSimpleName();
+
+        int pos = serviceName.lastIndexOf(&quot;Prx&quot;);
+        if (pos &lt;= 0) {
+            throw new IllegalArgumentException(&quot;Invalid ObjectPrx class, class name must end with Prx&quot;);
+        }
+        String realSvName = serviceName.substring(0, pos);
+
+        try {
+            ObjectPrx base = communicator.stringToProxy(realSvName);
+            proxy = (ObjectPrx) Class.forName(clsName + &quot;Helper&quot;).newInstance();
+            Method method = proxy.getClass().getDeclaredMethod(&quot;uncheckedCast&quot;, ObjectPrx.class);
+            proxy = (ObjectPrx) method.invoke(proxy, base);
+            return proxy;
+        } catch (Exception e) {
+            logger.error(&quot;创建 ObjectPrx 失败：&quot; + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    // 用于客户端 Api 获取 Ice 服务实例
+    public static ObjectPrx getServicePrx(Class serviceCls) {
+        ObjectPrx proxy = cls2PrxMap.get(serviceCls);
+        if (proxy != null) {
+            lastAccessTimestamp = System.currentTimeMillis();
+            return proxy;
+        }
+
+        proxy = createIceProxy(getIceCommunicator(), serviceCls);
+        cls2PrxMap.put(serviceCls, proxy);
+
+        lastAccessTimestamp = System.currentTimeMillis();
+
+        return proxy;
+    }
+
+    static class MonitorThread extends Thread {
+        @Override
+        public void run() {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.sleep(5000L);
+                    if (lastAccessTimestamp + idleTimeOutSeconds * 1000L &lt; System.currentTimeMillis()) {
+                        closeCommunicator(true);
+                    }
+                } catch (Exception e) {
+                    logger.error(&quot;线程中断异常：&quot; + e.getMessage());
+                }
+            }
+        }
+    }
+}
+</code></pre><p>代码里面加载了一个名为 iceclient 的配置文件进行属性读取。所以，我们在 /src/main/resources 目录下创建 <strong>iceclient.properties</strong> 文件，内容可如下设置：</p>
+<pre><code>--Ice.Default.Locator=IceGrid/Locator:tcp -h 192.168.22.216 -p 4061
+idleTimeOutSeconds=300
+</code></pre><p>具体属性值，可根据实际项目情况进行修改。</p>
+<p>之后，我们就可以用一行代码，获取到 Ice 服务的客户端（代理）了：</p>
+<pre><code>FooServicePrx proxy = (FooServicePrx) IceClientUtil.getServicePrx(FooServicePrx.class);
+</code></pre><blockquote>需要注意的是，这里有一个隐含的<strong>契约式编程</strong>，即 Ice Object 的 Proxy 名字与在 IceGrid 中定义的 Object Identity 保持之前提到的这种（重合）关系。契约这样的做法，省去了很多不要的代码，这也是契约式编程在很多地方都被或多或少地使用的重要原因。</blockquote>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Ice 客户端的标准写法既繁琐又不利于复用，能否封装一个工具类来获取 Ice 客户端呢？&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Ice" scheme="https://cmjzzx.github.io/categories/Ice/"/>
+    
+    
+      <category term="Ice" scheme="https://cmjzzx.github.io/tags/Ice/"/>
+    
+      <category term="Ice 客户端" scheme="https://cmjzzx.github.io/tags/Ice-%E5%AE%A2%E6%88%B7%E7%AB%AF/"/>
+    
+  </entry>
   
   <entry>
     <title>Ice 使用自定义日志</title>
@@ -441,10 +687,11 @@ gradle.projectsEvaluated {
     <link href="https://cmjzzx.github.io/2017/07/19/icepatch2/"/>
     <id>https://cmjzzx.github.io/2017/07/19/icepatch2/</id>
     <published>2017-07-19T02:08:38.000Z</published>
-    <updated>2017-07-25T08:39:28.092Z</updated>
+    <updated>2017-07-26T07:21:52.848Z</updated>
     
     <content type="html"><![CDATA[<p>IcePatch2 是 Ice 提供的部署工具，可以方便地实现分布式应用的服务部署与更新。</p>
 <a id="more"></a>
+<p>具体使用流程如下所示：</p>
 <ol>
 <li>编写一份配置文件，如：config.server，主要定义 <code>IcePatch2.InstanceName</code>、<code>IcePatch2.Endpoints</code>、<code>IcePatch2.Directory</code> 这 3 个属性。</li>
 <li>然后创建待同步的 server 端数据目录，如：serverData，里面存放待同步的目录及文件。</li>
@@ -453,7 +700,8 @@ gradle.projectsEvaluated {
 <li>创建 client 端数据目录，如：clientData，来同步对应的 server 端数据目录中的数据（也就是目录及文件）。</li>
 <li>在 client 端数据目录下运行 <code>icepatch2client –IcePatch2Client.Proxy=”${IcePatch2.InstanceName}/server:${IcePatch2.Endpoints}”</code>，开启 icepatch2client 服务，开始同步 server 端的数据。当然，也可以跟 server 端一样，将 <code>IcePatch2Client.Proxy</code> 这些属性放在一个独立的属性文件里，如：config.client，然后使用 <code>–Ice.Config=config.client</code> 来引入。</li>
 </ol>
-<p>client 端第一次同步数据可能会时间长点。</p>
+<blockquote>client 端第一次同步数据可能会时间长点。</blockquote>
+
 <p>server 端数据如果发生变动，如新增/删除了文件、文件内容有变更，需要先停止 icepatch2server 服务。然后运行 <code>icepatch2calc serverData</code> 重新压缩文件、计算校验和，再开启<br>icepatch2server 服务。最后开启 icepatch2client 服务，以同步最新的改动。</p>]]></content>
     
     <summary type="html">

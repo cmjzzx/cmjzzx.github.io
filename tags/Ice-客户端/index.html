@@ -13,18 +13,16 @@
 
 
 
-<meta name="description" content="IcePatch2 是 Ice 提供的部署工具，可以方便地实现分布式应用的服务部署与更新。">
-<meta name="keywords" content="Ice,IcePatch2,应用部署,应用升级">
-<meta property="og:type" content="article">
-<meta property="og:title" content="IcePatch2 命令行使用流程">
-<meta property="og:url" content="https://cmjzzx.github.io/2017/07/19/icepatch2/index.html">
+<meta name="description" content="随想">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Random Thoughts">
+<meta property="og:url" content="https://cmjzzx.github.io/tags/Ice-客户端/index.html">
 <meta property="og:site_name" content="Random Thoughts">
-<meta property="og:description" content="IcePatch2 是 Ice 提供的部署工具，可以方便地实现分布式应用的服务部署与更新。">
+<meta property="og:description" content="随想">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-07-26T07:21:52.848Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="IcePatch2 命令行使用流程">
-<meta name="twitter:description" content="IcePatch2 是 Ice 提供的部署工具，可以方便地实现分布式应用的服务部署与更新。">
+<meta name="twitter:title" content="Random Thoughts">
+<meta name="twitter:description" content="随想">
 
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
@@ -56,7 +54,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>IcePatch2 命令行使用流程 | Random Thoughts</title>
+<title>Tag: Ice 客户端 | Random Thoughts</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -66,9 +64,9 @@
         fancybox: true,
         animate: true,
         isHome: false,
-        isPost: true,
+        isPost: false,
         isArchive: false,
-        isTag: false,
+        isTag: true,
         isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
         scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
@@ -277,168 +275,38 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我">
 </nav>
-      <div class="body-wrap"><article id="post-icepatch2" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2017/07/19/icepatch2/" class="article-date">
-      <time datetime="2017-07-19T02:08:38.000Z" itemprop="datePublished">2017-07-19</time>
+      <div class="body-wrap"><section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2017" class="archive-year">2017</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+          <div class="article-meta">
+              <a href="/2017/07/26/ice-client/" class="archive-article-date">
+      <time datetime="2017-07-26T01:27:42.000Z" itemprop="datePublished">07-26</time>
 </a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        <h1 class="article-title" itemprop="name">
-      IcePatch2 命令行使用流程
+        </div>
+         <h1 itemprop="name">
+      <a class="archive-article-title" href="/2017/07/26/ice-client/">封装 Ice 客户端</a>
     </h1>
-      </header>
-      
-      <div class="article-info article-info-post">
-        <div class="article-category tagcloud">
+        <div class="article-info info-on-archive">
+          <div class="article-category tagcloud">
     <a class="article-category-link" href="/categories/Ice/">Ice</a>
     </div>
-        <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ice/">Ice</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IcePatch2/">IcePatch2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/应用升级/">应用升级</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/应用部署/">应用部署</a></li></ul>
+          <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ice/">Ice</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ice-客户端/">Ice 客户端</a></li></ul>
     </div>
-        <div class="clearfix"></div>
-      </div>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <p>IcePatch2 是 Ice 提供的部署工具，可以方便地实现分布式应用的服务部署与更新。</p>
-<a id="more"></a>
-<p>具体使用流程如下所示：</p>
-<ol>
-<li>编写一份配置文件，如：config.server，主要定义 <code>IcePatch2.InstanceName</code>、<code>IcePatch2.Endpoints</code>、<code>IcePatch2.Directory</code> 这 3 个属性。</li>
-<li>然后创建待同步的 server 端数据目录，如：serverData，里面存放待同步的目录及文件。</li>
-<li>运行 <code>icepatch2calc serverData</code>，压缩非空文件，计算校验和生成 IcePatch2.sum 文件。</li>
-<li>运行 <code>icepatch2server –Ice.Config=config.server</code>，开启 icepatch2server 服务，等待 client 的 patch 请求。</li>
-<li>创建 client 端数据目录，如：clientData，来同步对应的 server 端数据目录中的数据（也就是目录及文件）。</li>
-<li>在 client 端数据目录下运行 <code>icepatch2client –IcePatch2Client.Proxy=”${IcePatch2.InstanceName}/server:${IcePatch2.Endpoints}”</code>，开启 icepatch2client 服务，开始同步 server 端的数据。当然，也可以跟 server 端一样，将 <code>IcePatch2Client.Proxy</code> 这些属性放在一个独立的属性文件里，如：config.client，然后使用 <code>–Ice.Config=config.client</code> 来引入。</li>
-</ol>
-<blockquote>client 端第一次同步数据可能会时间长点。</blockquote>
-
-<p>server 端数据如果发生变动，如新增/删除了文件、文件内容有变更，需要先停止 icepatch2server 服务。然后运行 <code>icepatch2calc serverData</code> 重新压缩文件、计算校验和，再开启<br>icepatch2server 服务。最后开启 icepatch2client 服务，以同步最新的改动。</p>
-      
-    </div>
-    
-  </div>
-  
-    <div class="copyright">
-        <p><span>本文标题:</span><a href="/2017/07/19/icepatch2/">IcePatch2 命令行使用流程</a></p>
-        <p><span>文章作者:</span><a href="/" title="回到主页">Zhu Wu</a></p>
-        <p><span>发布时间:</span>2017-07-19, 10:08:38</p>
-        <p><span>最后更新:</span>2017-07-26, 15:21:52</p>
-        <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/07/19/icepatch2/" title="IcePatch2 命令行使用流程">https://cmjzzx.github.io/2017/07/19/icepatch2/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://cmjzzx.github.io/2017/07/19/icepatch2/　　作者: Zhu Wu" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
-            <script> var clipboard = new Clipboard('.copy-path'); </script>
-        </p>
-        <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
-        </p>
-    </div>
-
-
-
-    <nav id="article-nav">
-        
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2017/07/24/ice-dev-env/">
-                    搭建 Ice 开发环境
-                </a>
-            </div>
-        
-        
-    </nav>
-  
-</article>
-<div id="toc" class="toc-article">
-        <strong class="toc-title">文章目录</strong>
-        
-            
-        
-    </div>
-    <style>
-        .left-col .switch-btn,
-        .left-col .switch-area {
-            display: none;
-        }
-        .toc-level-3 i,
-        .toc-level-3 ol {
-            display: none !important;
-        }
-    </style>
-
-    <input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
-
-    <script>
-        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
-    </script>
-
-
-    <div class="share">
-    
-        <div class="bdsharebuttonbox">
-            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
-            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
-            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
-            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
-            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
-            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></a>
         </div>
-        <script>
-            window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"IcePatch2 命令行使用流程　| Random Thoughts　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
-        </script>
-    
-
-    
-</div>
-
-
-
-    
-        <section class="youyan" id="comments">
-    <script>
-        var loadComment = function(){
-            var d = document, s = d.createElement('script');
-            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2118965';
-            (d.head || d.body).appendChild(s);
-        }
-    </script>
-    <script> loadComment(); </script>
-    <div id="uyan_frame"></div>
-</section>
-    
-
-
-<div class="scroll" id="post-nav-button">
-        
-            <a href="/2017/07/24/ice-dev-env/" title="上一篇: 搭建 Ice 开发环境">
-                <i class="fa fa-angle-left"></i>
-            </a>
-        
-
-        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
-
-        
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
-        
-    </div>
-
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/07/26/ice-spring/">Ice 集成 Spring</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/26/ice-client/">封装 Ice 客户端</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/25/ice-log/">Ice 使用自定义日志</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/24/ice-dev-env/">搭建 Ice 开发环境</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/19/icepatch2/">IcePatch2 命令行使用流程</a></li></ul>
-
-
-    <script>
-        
-    </script></div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+  
+    </div></section></div>
       <footer id="footer">
     <div class="outer">
         <div id="footer-info">

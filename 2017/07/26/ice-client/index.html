@@ -13,18 +13,18 @@
 
 
 
-<meta name="description" content="IcePatch2 是 Ice 提供的部署工具，可以方便地实现分布式应用的服务部署与更新。">
-<meta name="keywords" content="Ice,IcePatch2,应用部署,应用升级">
+<meta name="description" content="Ice 客户端的标准写法既繁琐又不利于复用，能否封装一个工具类来获取 Ice 客户端呢？">
+<meta name="keywords" content="Ice,Ice 客户端">
 <meta property="og:type" content="article">
-<meta property="og:title" content="IcePatch2 命令行使用流程">
-<meta property="og:url" content="https://cmjzzx.github.io/2017/07/19/icepatch2/index.html">
+<meta property="og:title" content="封装 Ice 客户端">
+<meta property="og:url" content="https://cmjzzx.github.io/2017/07/26/ice-client/index.html">
 <meta property="og:site_name" content="Random Thoughts">
-<meta property="og:description" content="IcePatch2 是 Ice 提供的部署工具，可以方便地实现分布式应用的服务部署与更新。">
+<meta property="og:description" content="Ice 客户端的标准写法既繁琐又不利于复用，能否封装一个工具类来获取 Ice 客户端呢？">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-07-26T07:21:52.848Z">
+<meta property="og:updated_time" content="2017-07-26T02:19:52.856Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="IcePatch2 命令行使用流程">
-<meta name="twitter:description" content="IcePatch2 是 Ice 提供的部署工具，可以方便地实现分布式应用的服务部署与更新。">
+<meta name="twitter:title" content="封装 Ice 客户端">
+<meta name="twitter:description" content="Ice 客户端的标准写法既繁琐又不利于复用，能否封装一个工具类来获取 Ice 客户端呢？">
 
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
@@ -56,7 +56,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>IcePatch2 命令行使用流程 | Random Thoughts</title>
+<title>封装 Ice 客户端 | Random Thoughts</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -277,11 +277,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我">
 </nav>
-      <div class="body-wrap"><article id="post-icepatch2" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-ice-client" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/07/19/icepatch2/" class="article-date">
-      <time datetime="2017-07-19T02:08:38.000Z" itemprop="datePublished">2017-07-19</time>
+      <a href="/2017/07/26/ice-client/" class="article-date">
+      <time datetime="2017-07-26T01:27:42.000Z" itemprop="datePublished">2017-07-26</time>
 </a>
     </div>
   
@@ -292,7 +292,7 @@
     
       <header class="article-header">
         <h1 class="article-title" itemprop="name">
-      IcePatch2 命令行使用流程
+      封装 Ice 客户端
     </h1>
       </header>
       
@@ -301,7 +301,7 @@
     <a class="article-category-link" href="/categories/Ice/">Ice</a>
     </div>
         <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ice/">Ice</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IcePatch2/">IcePatch2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/应用升级/">应用升级</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/应用部署/">应用部署</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ice/">Ice</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ice-客户端/">Ice 客户端</a></li></ul>
     </div>
         <div class="clearfix"></div>
       </div>
@@ -310,33 +310,194 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>IcePatch2 是 Ice 提供的部署工具，可以方便地实现分布式应用的服务部署与更新。</p>
+        <p>Ice 客户端的标准写法既繁琐又不利于复用，能否封装一个工具类来获取 Ice 客户端呢？</p>
 <a id="more"></a>
-<p>具体使用流程如下所示：</p>
-<ol>
-<li>编写一份配置文件，如：config.server，主要定义 <code>IcePatch2.InstanceName</code>、<code>IcePatch2.Endpoints</code>、<code>IcePatch2.Directory</code> 这 3 个属性。</li>
-<li>然后创建待同步的 server 端数据目录，如：serverData，里面存放待同步的目录及文件。</li>
-<li>运行 <code>icepatch2calc serverData</code>，压缩非空文件，计算校验和生成 IcePatch2.sum 文件。</li>
-<li>运行 <code>icepatch2server –Ice.Config=config.server</code>，开启 icepatch2server 服务，等待 client 的 patch 请求。</li>
-<li>创建 client 端数据目录，如：clientData，来同步对应的 server 端数据目录中的数据（也就是目录及文件）。</li>
-<li>在 client 端数据目录下运行 <code>icepatch2client –IcePatch2Client.Proxy=”${IcePatch2.InstanceName}/server:${IcePatch2.Endpoints}”</code>，开启 icepatch2client 服务，开始同步 server 端的数据。当然，也可以跟 server 端一样，将 <code>IcePatch2Client.Proxy</code> 这些属性放在一个独立的属性文件里，如：config.client，然后使用 <code>–Ice.Config=config.client</code> 来引入。</li>
-</ol>
-<blockquote>client 端第一次同步数据可能会时间长点。</blockquote>
+<h2 id="Ice-客户端的标准写法"><a href="#Ice-客户端的标准写法" class="headerlink" title="Ice 客户端的标准写法"></a>Ice 客户端的标准写法</h2><pre><code>Ice.Communicator ic = null;
+try {
+    // 初始化通信器
+    ic = Ice.Util.initialize(args);
 
-<p>server 端数据如果发生变动，如新增/删除了文件、文件内容有变更，需要先停止 icepatch2server 服务。然后运行 <code>icepatch2calc serverData</code> 重新压缩文件、计算校验和，再开启<br>icepatch2server 服务。最后开启 icepatch2client 服务，以同步最新的改动。</p>
+    Ice.ObjectPrx base = ic.stringToProxy(&quot;Foo:default -p 10000&quot;);
+    FooServicePrx proxy = FooServiceHelper.checkedCast(base);
+
+    if (proxy == null) {
+        throw new Error(&quot;Invalid proxy&quot;);
+    } 
+} catch(Exception e) {
+    e.printStackTrace();
+} finally {
+    if (ic != null) {
+        ic.destroy();
+    }
+}
+</code></pre><p>这里存在以下几个问题。</p>
+<ul>
+<li>Locator 地址不能写死在代码里，它属于共用部分配置</li>
+<li>Communicator 是重量级全局共享的对象，涉及线程池、Socket 连接等，每次的创建和销毁既影响性能又容易产生泄漏问题</li>
+<li>Ice Object 的标识符（Identity，如上面的 Foo）与类名有 99% 的可能性是重合的，Identity + Prx 相当于是 Object Proxy 的类名</li>
+<li>客户端的代码还是有点多</li>
+</ul>
+<h2 id="封装一个-Ice-客户端工具类"><a href="#封装一个-Ice-客户端工具类" class="headerlink" title="封装一个 Ice 客户端工具类"></a>封装一个 Ice 客户端工具类</h2><p>因此，我们可以写一个工具类，思路如下：</p>
+<blockquote>读取配置文件，获得 Locator 地址并创建全局静态 Communicator 对象。在访问某个 Ice Object Proxy 时，根据其类名反推 Ice Object 的标识符，用反射方法生成Proxy 对象并返回。由于<br>Proxy 可能被多次使用，因此用 Map 缓存 Proxy，下次调用就不用再生成了。同时启动一个线程，在超过一定的闲置时间后，就关闭 Communicator 对象并移除 Map 中的 Proxy，释放资源。</blockquote>
+
+<p>下面是具体的代码实现：</p>
+<pre><code>package com.ucmed.foo.util
+
+import Ice.ObjectPrx;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+public class IceClientUtil {
+    private static final String locatorKey = &quot;--Ice.Default.Locator&quot;;
+    private static Logger logger = LoggerFactory.getLogger(IceClientUtil.class);
+    private static volatile Ice.Communicator ic = null;
+    private static Map&lt;Class, ObjectPrx&gt; cls2PrxMap = new HashMap&lt;&gt;();
+    private static volatile long lastAccessTimestamp;
+    private static volatile MonitorThread monitorThread;
+    private static long idleTimeOutSeconds = 0;
+    private static String iceLocator = null;
+
+    // 延迟加载 Communicator
+    public static Ice.Communicator getIceCommunicator() {
+        if (ic == null) {
+            synchronized (IceClientUtil.class) {
+                if (ic == null) {
+                    ResourceBundle resourceBundle = ResourceBundle.getBundle(&quot;iceclient&quot;, Locale.ENGLISH);
+                    iceLocator = resourceBundle.getString(locatorKey);
+                    idleTimeOutSeconds = Integer.parseInt(resourceBundle.getString(&quot;idleTimeOutSeconds&quot;));
+
+                    logger.info(&quot;Ice client&apos;s locator is &quot; + iceLocator + &quot;, proxy cache timeout seconds:&quot; +
+                            idleTimeOutSeconds);
+
+                    String[] initParams = new String[]{locatorKey + &quot;=&quot; + iceLocator};
+                    ic = Ice.Util.initialize(initParams);
+
+                    createMonitorThread();
+                }
+            }
+        }
+        lastAccessTimestamp = System.currentTimeMillis();
+        return ic;
+    }
+
+    // 创建并开启（守护）线程
+    private static void createMonitorThread() {
+        monitorThread = new MonitorThread();
+        monitorThread.setDaemon(true);
+        monitorThread.start();
+    }
+
+    // 关闭 Communicator，释放资源
+    static void closeCommunicator(boolean removeServiceCache) {
+        synchronized (IceClientUtil.class) {
+            if (ic != null) {
+                safeShutdown();
+                monitorThread.interrupt();
+
+                if (removeServiceCache &amp;&amp; !cls2PrxMap.isEmpty()) {
+                    try {
+                        cls2PrxMap.clear();
+                    } catch (Exception e) {
+                        logger.error(&quot;Map 清理失败：&quot; + e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
+    private static void safeShutdown() {
+        try {
+            ic.shutdown();
+        } catch (Exception e) {
+            logger.error(&quot;Ice.Communicator 关闭失败：&quot; + e.getMessage());
+        } finally {
+            ic.destroy();
+            ic = null;
+        }
+    }
+
+    // 反射创建 Object Proxy
+    private static ObjectPrx createIceProxy(Ice.Communicator communicator, Class serviceCls) {
+        ObjectPrx proxy;
+        String clsName = serviceCls.getName();
+        String serviceName = serviceCls.getSimpleName();
+
+        int pos = serviceName.lastIndexOf(&quot;Prx&quot;);
+        if (pos &lt;= 0) {
+            throw new IllegalArgumentException(&quot;Invalid ObjectPrx class, class name must end with Prx&quot;);
+        }
+        String realSvName = serviceName.substring(0, pos);
+
+        try {
+            ObjectPrx base = communicator.stringToProxy(realSvName);
+            proxy = (ObjectPrx) Class.forName(clsName + &quot;Helper&quot;).newInstance();
+            Method method = proxy.getClass().getDeclaredMethod(&quot;uncheckedCast&quot;, ObjectPrx.class);
+            proxy = (ObjectPrx) method.invoke(proxy, base);
+            return proxy;
+        } catch (Exception e) {
+            logger.error(&quot;创建 ObjectPrx 失败：&quot; + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    // 用于客户端 Api 获取 Ice 服务实例
+    public static ObjectPrx getServicePrx(Class serviceCls) {
+        ObjectPrx proxy = cls2PrxMap.get(serviceCls);
+        if (proxy != null) {
+            lastAccessTimestamp = System.currentTimeMillis();
+            return proxy;
+        }
+
+        proxy = createIceProxy(getIceCommunicator(), serviceCls);
+        cls2PrxMap.put(serviceCls, proxy);
+
+        lastAccessTimestamp = System.currentTimeMillis();
+
+        return proxy;
+    }
+
+    static class MonitorThread extends Thread {
+        @Override
+        public void run() {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.sleep(5000L);
+                    if (lastAccessTimestamp + idleTimeOutSeconds * 1000L &lt; System.currentTimeMillis()) {
+                        closeCommunicator(true);
+                    }
+                } catch (Exception e) {
+                    logger.error(&quot;线程中断异常：&quot; + e.getMessage());
+                }
+            }
+        }
+    }
+}
+</code></pre><p>代码里面加载了一个名为 iceclient 的配置文件进行属性读取。所以，我们在 /src/main/resources 目录下创建 <strong>iceclient.properties</strong> 文件，内容可如下设置：</p>
+<pre><code>--Ice.Default.Locator=IceGrid/Locator:tcp -h 192.168.22.216 -p 4061
+idleTimeOutSeconds=300
+</code></pre><p>具体属性值，可根据实际项目情况进行修改。</p>
+<p>之后，我们就可以用一行代码，获取到 Ice 服务的客户端（代理）了：</p>
+<pre><code>FooServicePrx proxy = (FooServicePrx) IceClientUtil.getServicePrx(FooServicePrx.class);
+</code></pre><blockquote>需要注意的是，这里有一个隐含的<strong>契约式编程</strong>，即 Ice Object 的 Proxy 名字与在 IceGrid 中定义的 Object Identity 保持之前提到的这种（重合）关系。契约这样的做法，省去了很多不要的代码，这也是契约式编程在很多地方都被或多或少地使用的重要原因。</blockquote>
       
     </div>
     
   </div>
   
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2017/07/19/icepatch2/">IcePatch2 命令行使用流程</a></p>
+        <p><span>本文标题:</span><a href="/2017/07/26/ice-client/">封装 Ice 客户端</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">Zhu Wu</a></p>
-        <p><span>发布时间:</span>2017-07-19, 10:08:38</p>
-        <p><span>最后更新:</span>2017-07-26, 15:21:52</p>
+        <p><span>发布时间:</span>2017-07-26, 09:27:42</p>
+        <p><span>最后更新:</span>2017-07-26, 10:19:52</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/07/19/icepatch2/" title="IcePatch2 命令行使用流程">https://cmjzzx.github.io/2017/07/19/icepatch2/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://cmjzzx.github.io/2017/07/19/icepatch2/　　作者: Zhu Wu" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2017/07/26/ice-client/" title="封装 Ice 客户端">https://cmjzzx.github.io/2017/07/26/ice-client/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://cmjzzx.github.io/2017/07/26/ice-client/　　作者: Zhu Wu" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -349,11 +510,17 @@
     <nav id="article-nav">
         
             <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2017/07/24/ice-dev-env/">
-                    搭建 Ice 开发环境
+                <a href="/2017/07/26/ice-spring/">
+                    Ice 集成 Spring
                 </a>
             </div>
         
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/07/25/ice-log/">
+                    Ice 使用自定义日志
+                </a>
+            </div>
         
     </nav>
   
@@ -361,7 +528,7 @@
 <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Ice-客户端的标准写法"><span class="toc-number">1.</span> <span class="toc-text">Ice 客户端的标准写法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#封装一个-Ice-客户端工具类"><span class="toc-number">2.</span> <span class="toc-text">封装一个 Ice 客户端工具类</span></a></li></ol>
         
     </div>
     <style>
@@ -395,7 +562,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"IcePatch2 命令行使用流程　| Random Thoughts　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"封装 Ice 客户端　| Random Thoughts　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -421,7 +588,7 @@
 
 <div class="scroll" id="post-nav-button">
         
-            <a href="/2017/07/24/ice-dev-env/" title="上一篇: 搭建 Ice 开发环境">
+            <a href="/2017/07/26/ice-spring/" title="上一篇: Ice 集成 Spring">
                 <i class="fa fa-angle-left"></i>
             </a>
         
@@ -429,7 +596,9 @@
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+            <a href="/2017/07/25/ice-log/" title="下一篇: Ice 使用自定义日志">
+                <i class="fa fa-angle-right"></i>
+            </a>
         
     </div>
 

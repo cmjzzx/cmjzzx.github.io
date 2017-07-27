@@ -4,32 +4,8 @@
 
     
   <url>
-    <loc>https://cmjzzx.github.io/2017/07/25/ice-log/</loc>
-    <lastmod>2017-07-25T11:50:56.164Z</lastmod>
-    <data>
-        <display>
-        <title>Ice 使用自定义日志</title>
-        <pubTime>2017-07-25T09:14:14.000Z</pubTime>
-        
-        <tag>Ice</tag>
-         
-        <tag>日志</tag>
-         
-         
-           
-             
-              <breadCrumb title="Ice" url="https://cmjzzx.github.io/categories/Ice/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-    
-    
-  <url>
     <loc>https://cmjzzx.github.io/2017/07/19/icepatch2/</loc>
-    <lastmod>2017-07-25T08:39:28.092Z</lastmod>
+    <lastmod>2017-07-26T07:21:52.848Z</lastmod>
     <data>
         <display>
         <title>IcePatch2 命令行使用流程</title>
@@ -52,6 +28,74 @@
     </data>
     </url>
 
+    
+  <url>
+    <loc>https://cmjzzx.github.io/2017/07/26/ice-spring/</loc>
+    <lastmod>2017-07-26T07:15:23.643Z</lastmod>
+    <data>
+        <display>
+        <title>Ice 集成 Spring</title>
+        <pubTime>2017-07-26T06:08:12.000Z</pubTime>
+        
+        <tag>Ice</tag>
+         
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Ice" url="https://cmjzzx.github.io/categories/Ice/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://cmjzzx.github.io/2017/07/26/ice-client/</loc>
+    <lastmod>2017-07-26T02:19:52.856Z</lastmod>
+    <data>
+        <display>
+        <title>封装 Ice 客户端</title>
+        <pubTime>2017-07-26T01:27:42.000Z</pubTime>
+        
+        <tag>Ice</tag>
+         
+        <tag>Ice 客户端</tag>
+         
+         
+           
+             
+              <breadCrumb title="Ice" url="https://cmjzzx.github.io/categories/Ice/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://cmjzzx.github.io/2017/07/25/ice-log/</loc>
+    <lastmod>2017-07-25T11:50:56.164Z</lastmod>
+    <data>
+        <display>
+        <title>Ice 使用自定义日志</title>
+        <pubTime>2017-07-25T09:14:14.000Z</pubTime>
+        
+        <tag>Ice</tag>
+         
+        <tag>日志</tag>
+         
+         
+           
+             
+              <breadCrumb title="Ice" url="https://cmjzzx.github.io/categories/Ice/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
     
   <url>
     <loc>https://cmjzzx.github.io/2017/07/24/ice-dev-env/</loc>

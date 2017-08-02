@@ -415,7 +415,7 @@ public class MySlf4jIceBoxServer {
     <link href="https://cmjzzx.github.io/2017/07/24/ice-dev-env/"/>
     <id>https://cmjzzx.github.io/2017/07/24/ice-dev-env/</id>
     <published>2017-07-24T08:43:38.000Z</published>
-    <updated>2017-07-25T08:36:42.836Z</updated>
+    <updated>2017-08-02T06:47:30.601Z</updated>
     
     <content type="html"><![CDATA[<p>可以使用 Eclipse + Maven 以及 IDEA + Gradle 的方式来开发 Ice 项目，建议使用后者。</p>
 <a id="more"></a>
@@ -434,7 +434,7 @@ public class MySlf4jIceBoxServer {
 <tr>
 <td style="text-align:center">3.7</td>
 <td style="text-align:center">1.8</td>
-<td style="text-align:center"><a href="https://dev.zeroc.com/share/ice/v3.7.0-beta0/msi/Ice-3.7b0.msi" target="_blank" rel="external">Windows beta 版本</a></td>
+<td style="text-align:center"><a href="https://zeroc.com/download/Ice/3.7/Ice-3.7.0.msi" target="_blank" rel="external">Windows 版本</a></td>
 <td style="text-align:center">Gradle</td>
 <td style="text-align:center">IDEA</td>
 </tr>
@@ -455,7 +455,7 @@ public class MySlf4jIceBoxServer {
 </tbody>
 </table>
 <p>Ice Linux 版本下载方式详见官网：<a href="https://zeroc.com/distributions/ice" target="_blank" rel="external">https://zeroc.com/distributions/ice</a>。</p>
-<p>建议选择 <strong>Ice 3.6</strong> 版本，如 Ice 3.6.3 作为开发、生产环境使用。Ice 3.7 目前只提供了 beta 版本的下载，Ice 3.5 版本较旧。</p>
+<p>本文以 Ice 3.6.3 版本为例。</p>
 <p>Ice 下载、安装完成后，将其安装路径添加到名为 “ICE_HOME” 的环境变量中，同时添加 “%ICE_HOME%\bin” 到 Path 环境变量中，确保其中的命令行可以在命令行界面或 IDE 中执行。</p>
 <p>上述安装和设置完成后，打开 Windows 命令行，执行 <code>slice2java -v</code>，如果出现版本号，如 “3.6.3”，则表示 Ice 安装成功，可以正常使用了。</p>
 <h2 id="搭建开发环境"><a href="#搭建开发环境" class="headerlink" title="搭建开发环境"></a>搭建开发环境</h2><h3 id="使用-Eclipse-开发-Ice-项目"><a href="#使用-Eclipse-开发-Ice-项目" class="headerlink" title="使用 Eclipse 开发 Ice 项目"></a>使用 Eclipse 开发 Ice 项目</h3><p>使用 Eclipse 开发 Ice 项目，适合 Ice 3.6 以下版本（如 Ice 3.5）。相关软件为——</p>
@@ -655,7 +655,7 @@ task copyJars(type: Copy) {
     into &apos;lib&apos;
 }
 
-// 设置 UTF-8 编码，以免 Java 源码中出现中文乱码
+// 设置 UTF-8 编码，以免在构建时出现中文乱码
 tasks.withType(JavaCompile) {
     options.encoding = &quot;UTF-8&quot;
 }
@@ -664,7 +664,68 @@ tasks.withType(JavaCompile) {
 gradle.projectsEvaluated {
     compileJava.dependsOn(compileSlice)
 } 
-</code></pre><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>建议使用 Gradle 构建 Ice 项目</strong>，以使用 Ice 的新发布版本，体验最新的特性和及时的 Bug 修复。可以在上面这个 build.gradle 文件的基础上进行相应改动，以满足实际项目需要。</p>
+</code></pre><p>Ice 官方也提供了一个叫做 <code>slice</code> 的 Ice Builder for Gradle 插件，对应的 <code>build.gradle</code> 文件示例如下：</p>
+<pre><code>// 项目标识（根据实际进行替换）
+group &apos;com.ucmed.ice&apos;
+version &apos;1.0-SNAPSHOT&apos;
+
+// 使用 java 插件
+apply plugin: &apos;java&apos;
+
+// 源码兼容级别（根据实际进行替换）
+sourceCompatibility = 1.8
+
+// 项目依赖的 jar 包所在仓库
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url &quot;http://192.168.0.114:8081/nexus/content/repositories/releases&quot;
+    }
+    maven {
+        url &quot;https://repo.zeroc.com/nexus/content/repositories/releases&quot;
+    }
+}
+
+// 项目依赖
+dependencies {
+    compile group: &apos;com.zeroc&apos;, name: &apos;ice&apos;, version: &apos;3.6.3&apos;
+    compile group: &apos;com.zeroc&apos;, name: &apos;icebox&apos;, version: &apos;3.6.3&apos;
+    compile group: &apos;org.slf4j&apos;, name: &apos;slf4j-api&apos;, version: &apos;1.7.21&apos;
+    compile group: &apos;log4j&apos;, name: &apos;log4j&apos;, version: &apos;1.2.17&apos;
+    compile group: &apos;org.slf4j&apos;, name: &apos;slf4j-log4j12&apos;, version: &apos;1.7.21&apos;
+    testCompile group: &apos;junit&apos;, name: &apos;junit&apos;, version: &apos;4.12&apos;
+}
+
+// 项目构建脚本
+buildscript {
+    // 脚本依赖的 jar 包所在仓库
+    repositories {
+        maven {
+            url &quot;https://plugins.gradle.org/m2/&quot;
+        }
+    }
+    // 脚本依赖
+    dependencies {
+        classpath &quot;gradle.plugin.com.zeroc.gradle.ice-builder:slice:1.4.1&quot;
+    }
+}
+
+// 使用 slice 插件
+apply plugin: &quot;com.zeroc.gradle.ice-builder.slice&quot;
+
+// slice 属性定义，更多可参考 https://github.com/zeroc-ice/ice-builder-gradle
+slice {
+    // 定义自动生成的代码存储目录，Slice 文件默认目录为 /src/main/slice
+    output file(&quot;/src/main/java&quot;)
+}
+
+// 设置 UTF-8 编码，以免在构建时出现中文乱码
+tasks.withType(JavaCompile) {
+    options.encoding = &quot;UTF-8&quot;
+}
+</code></pre><p>相比而言，第二个 <code>build.gradle</code> 文件更为简洁，我们不需要像第一个文件那样，为每一个 Slice 文件写一行编译说明了。所以，推荐大家参考第二个文件，来写我们实际项目的 <code>build<br>.gradle</code> 文件。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>建议使用 Gradle 构建 Ice 项目</strong>，以使用 Ice 的新发布版本，体验最新的特性和及时的 Bug 修复。可以在上面这个 build.gradle 文件的基础上进行相应改动，以满足实际项目需要。</p>
 <p>开发时，可以在 IDEA 中配置本地安装好的 gradle 版本。Ice 官方使用的 gradlew 要下载全部版本的 gradle ，由于众所周知的网络原因，下载时基本都会卡住不动，所以不推荐。 </p>]]></content>
     
     <summary type="html">
